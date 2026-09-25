@@ -1,0 +1,43 @@
+schema: spec-driven
+
+context: |
+  Project: elpilite — a typed, bitemporal, neuro-symbolic database for agentic memory.
+  Tech stack: OCaml 5.x, dune, ELPI 1.18 (λProlog) as DDL + query language,
+  Turso Database (sqlite3-compatible C API) as primary store, stock SQLite + sqlite-vec
+  as differential-testing backend, sqlite3-ocaml bindings, QCheck for property tests.
+  Interfaces: OCaml library, CLI/REPL, MCP server, Python thin client, Node.js N-API addon.
+  Architecture and design decisions live in lat.md/ (run `lat check` after changes).
+  Principles: one language (λProlog); DB is source of truth; append-only bitemporal;
+  pure reads + atomic delta writes; push relational work to SQL; mechanism not policy;
+  every optimisation has a differential twin test.
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
