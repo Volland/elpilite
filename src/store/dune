@@ -1,0 +1,8 @@
+(library
+ (name elpilite_store)
+ (public_name elpilite.store)
+ (foreign_stubs
+  (language c)
+  (names sqldl_stubs)
+  (flags :standard -O2 -Wall))
+ (c_library_flags (-ldl)))

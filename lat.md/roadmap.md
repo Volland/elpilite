@@ -31,6 +31,15 @@ De-risk the toolchain: `sqlite3-ocaml` linked against Turso's C library, ELPI 1.
 
 Done when `dune test` passes on macOS and Linux CI and a gap list of missing Turso C-API symbols (if any) is recorded.
 
+Outcome: both backends load in one process via [[storage#Store Signature#Backend Loading]]; ELPI goals stream rows lazily (one solution ⇒ one row fetched); the gap list is in [[storage#Store Signature#Turso C-API Gap List]].
+
+Toolchain findings recorded during the spike:
+
+- The project uses a local opam switch (`_opam/`, OCaml 5.3.0) created by `make switch`; `scripts/sw` runs any command inside it with a clean environment.
+- OCaml 5.1.1 crashed under parallel load on macOS 26 (Darwin 25); 5.3.0 is used instead.
+- On macOS 26, `dune` (built with OCaml 5.x) segfaults when running jobs in parallel and `ocamlbuild` segfaults on any build; the `Makefile` builds with `-j 1` on Darwin, and `alcotest` (needs `ocamlbuild` via `topkg`) is replaced by the in-house runner `test/support/testkit.ml`. Linux CI is unaffected.
+- Turso requires Rust 1.88 (`rust-toolchain.toml`); `scripts/build-turso.sh` installs it via rustup.
+
 ## M1 Storage Core
 
 `Store` signature with both backends, term DAG, catalog, `:persistent` DDL, typed insert and lookup, bitemporal columns.

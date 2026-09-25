@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: System SQLite (differential backend)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libsqlite3-0
+
+      - name: System SQLite (differential backend)
+        if: runner.os == 'macOS'
+        run: brew install sqlite
+
+      - name: Cache Turso build
+        uses: actions/cache@v4
+        with:
+          path: vendor/turso
+          key: turso-${{ matrix.os }}-${{ hashFiles('vendor/turso.rev') }}
+
+      - uses: dtolnay/rust-toolchain@1.88
+
+      - name: Build Turso C library
+        run: ./scripts/build-turso.sh
+
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5.3"
+
+      - run: opam install . --deps-only --with-test -y
+
+      - run: opam exec -- dune build
+
+      - run: opam exec -- dune test

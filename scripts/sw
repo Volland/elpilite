@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# Run a command inside the project-local opam switch (_opam/), with a clean
+# OCaml environment regardless of the caller's active switch.
+ROOT=$(cd "$(dirname "$0")/.." && pwd)
+exec opam exec --switch="$ROOT" --set-switch -- "$@"

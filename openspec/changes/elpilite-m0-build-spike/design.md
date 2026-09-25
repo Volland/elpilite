@@ -11,7 +11,8 @@ M0 — Build spike. Architecture and rationale are maintained in `lat.md/`; this
 ## Decisions
 
 - Toolchain: project-local opam switch (`_opam/`) with OCaml 5.x so the default switch is untouched.
-- Turso built from source with cargo at a pinned git revision; the C library (sqlite3-compatible API) is linked into sqlite3-ocaml through a dune rule selecting the library path via an environment variable (`ELPILITE_BACKEND_LIB`).
+- Turso built from source with cargo at a pinned git revision (`vendor/turso.rev`). Instead of linking `sqlite3-ocaml` (which would clash with stock SQLite's identical symbols), backends are loaded at runtime with `dlopen(RTLD_LOCAL)` through a small C shim with a per-library function table; library paths come from `ELPILITE_TURSO_LIB` / `ELPILITE_SQLITE_LIB` or defaults.
+- Test runner: in-house `testkit` instead of alcotest (alcotest's build chain needs ocamlbuild, which segfaults on macOS 26 with OCaml 5.x).
 - Streaming builtin: implemented with ELPI's builtin API; if lazy nondeterminism across backtracking is not supported, fall back to chunked prefetch with a continuation (design risk in lat.md/evaluation.md).
 
 ## Risks / Trade-offs

@@ -1,0 +1,4 @@
+(executable
+ (name elpilite)
+ (public_name elpilite)
+ (libraries elpilite))

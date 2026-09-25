@@ -34,6 +34,23 @@ MVCC / `BEGIN CONCURRENT` is not used in v1: at the time of design it cannot be 
 
 If a required `sqlite3_*` entry point is missing from Turso's C API, the fallback is a thin C/Rust shim — detected in milestone M0 ([[roadmap#M0 Build Spike]]).
 
+### Backend Loading
+
+Backend libraries are loaded at runtime with `dlopen(RTLD_LOCAL)` and called through a per-library function table, so Turso and SQLite coexist in one process.
+
+Linking a binding such as `sqlite3-ocaml` against Turso would clash with stock SQLite (identical `sqlite3_*` symbols) and prevent in-process differential tests. The shim is [[src/store/sqldl_stubs.c#sqldl_lib]]; OCaml side in `src/store/sqldl.ml`; library discovery in `src/store/backend.ml` (`ELPILITE_TURSO_LIB`, `ELPILITE_SQLITE_LIB`, or defaults). Turso is built by `scripts/build-turso.sh` at the revision pinned in `vendor/turso.rev`.
+
+### Turso C-API Gap List
+
+Result of the M0 spike: which `sqlite3_*` entry points used by the engine are absent from Turso's C library at the pinned revision.
+
+| Symbol | Status | Impact |
+|---|---|---|
+| all 26 required symbols (open/close, prepare/step/reset/finalize, bind_*, column_*, exec, errmsg, changes, last_insert_rowid, get_autocommit, libversion, free) | present | none |
+| `sqlite3_enable_load_extension`, `sqlite3_load_extension` | missing | expected: Turso has native vectors; loadable extensions (sqlite-vec) are only used by the SQLite backend |
+
+Turso's own compatibility table (`vendor/turso/COMPAT.md`) marks `sqlite3_open_v2` VFS parameters, `sqlite3_db_config`, `sqlite3_limit` and `sqlite3_db_readonly` as stubs or partial; the engine does not use them.
+
 ### SQLite Backend
 
 Stock SQLite plus the sqlite-vec extension implements the same signature and exists for differential testing and as an escape hatch.

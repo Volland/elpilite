@@ -1,0 +1,4 @@
+(library
+ (name elpilite_eval)
+ (public_name elpilite.eval)
+ (libraries elpi elpilite.store))
