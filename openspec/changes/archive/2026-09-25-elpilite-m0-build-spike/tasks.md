@@ -5,4 +5,4 @@
 - [x] 1.3 Record the Turso C-API gap list (symbols used by sqlite3-ocaml that are missing or stubbed) in `lat.md/storage.md`
 - [x] 1.4 Embed ELPI: load an `.elpi` program and run a goal from OCaml
 - [x] 1.5 Implement one nondeterministic ELPI builtin that streams rows from a Turso cursor across backtracking; validate laziness (early stop)
-- [ ] 1.6 CI on macOS arm64 and Linux x64 running `dune test` against both Turso and stock SQLite
+- [x] 1.6 CI on macOS arm64 and Linux x64 running `dune test` against both Turso and stock SQLite
